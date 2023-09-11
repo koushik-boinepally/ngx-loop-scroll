@@ -4,15 +4,11 @@
 A simple Angular library to create infinitely scrolling items in a loop. This library offers a seamless looping scroll experience for your Angular projects.
 
 ## Demo
-A live demo can be found [here](#). The demo is hosted on [Stackblitz](https://stackblitz.com/). 
+A live demo can be found [here](https://stackblitz.com/edit/stackblitz-starters-pevwdv). 
 
 ## Installation
 ```bash
 npm install ngx-loop-scroll --save
-```
-## Importing the module
-```typescript
-import { LoopScrollModule } from 'ngx-loop-scroll'
 ```
 
 ## Usage

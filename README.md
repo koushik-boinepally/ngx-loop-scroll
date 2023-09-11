@@ -1,27 +1,41 @@
-# InfiniteCarousel
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.3.
+# ngx-loop-scroll
 
-## Development server
+A simple Angular library to create infinitely scrolling items in a loop. This library offers a seamless looping scroll experience for your Angular projects.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Installation
+```bash
+npm install ngx-loop-scroll --save
+```
 
-## Code scaffolding
+## Usage
+Simply wrap your list of items inside the `ngx-loop-scroll` component:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```html
+<ngx-loop-scroll direction="right" [height]="250">
+    <div *ngFor="let item of items; let i = index;" class="item">
+        <div>{{i}}</div>
+    </div>
+</ngx-loop-scroll>
+```
 
-## Build
+### Parameters:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **direction** (Required): The direction in which the items should scroll. Accepts values 'left' or 'right'.
+- **height** (Required): The height of the scrolling area. This should be given as a binding.
+- **[autoplay]** (Optional): Set this to `true` to enable autoplay. Default is `false`.
+- **[animationSpeed]** (Optional): The speed at which the items should animate/scroll.
 
-## Running unit tests
+## Demo
+A live demo can be found [here](#). 
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Limitations
+- Currently, only horizontal scrolling is supported.
+- Feel free to contribute to this project and add more features.
 
-## Running end-to-end tests
+## License
+MIT
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Feel free to contribute to this project and raise issues if you find any.

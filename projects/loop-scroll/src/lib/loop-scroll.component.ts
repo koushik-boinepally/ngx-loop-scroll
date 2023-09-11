@@ -95,18 +95,17 @@ export class LoopScrollComponent implements AfterViewInit {
   }
 
   getColor(index: number): string {
-    // Rainbow colors
     const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
     return colors[index % colors.length];
   }
 
   positionItems(): void {
 
-    // 1. Query the DOM to get the children of the `div` with class `container`.
+    // Query the DOM to get the children of the `div` with class `container`.
     // const container = this.el.nativeElement.querySelector('.container');
     const items = this.containerDiv!.children;
 
-    // 2. Calculate the total width of the container.
+    // Calculate the total width of the container.
     let containerWidth = this.containerDiv!.offsetWidth;
 
     // Ensure offset is always positive using modulo
@@ -122,7 +121,7 @@ export class LoopScrollComponent implements AfterViewInit {
       // Adding width and padding (assuming padding of 10px for simplicity)
       currentPosition += item.offsetWidth + 10;
 
-      // 4. Center the items vertically.
+      // Center the items vertically.
       item.style.top = `${(this.containerDiv!.offsetHeight - item.offsetHeight) / 2}px`;
 
       // If we reach end of the container width, subtract the container width from the current position
@@ -143,7 +142,7 @@ export class LoopScrollComponent implements AfterViewInit {
 
   animateOffset() {
     const update = () => {
-      this.updateOffset(this.increment); // or whatever increment you're using
+      this.updateOffset(this.increment); 
       requestAnimationFrame(update);
     };
     update();

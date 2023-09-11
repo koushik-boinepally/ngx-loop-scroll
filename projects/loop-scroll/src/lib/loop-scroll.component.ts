@@ -10,7 +10,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/co
       }
 
       .viewport {
-        transform: translateX(-250px);
+        transform: translateX(-250px); // TODO - make this offset dynamic
       }
     </style>
     <div class="viewport" (mouseover)="mouseover($event)" 

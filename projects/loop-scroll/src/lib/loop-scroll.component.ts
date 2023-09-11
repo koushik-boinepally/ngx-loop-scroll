@@ -46,6 +46,14 @@ export class LoopScrollComponent implements AfterViewInit {
     this.containerHeight = height;
   }
 
+  _autoplay = false;
+  @Input() set autoplay(autoplay: boolean) {
+    this._autoplay = autoplay;
+    if (autoplay) {
+      this.animateOffset();
+    }
+  }
+
   constructor(private el: ElementRef) { }
 
   handleDrag(movementX: number): void {
@@ -143,7 +151,8 @@ export class LoopScrollComponent implements AfterViewInit {
   animateOffset() {
     const update = () => {
       this.updateOffset(this.increment); 
-      requestAnimationFrame(update);
+      if (this._autoplay)
+        requestAnimationFrame(update);
     };
     update();
   }

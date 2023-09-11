@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'lib-loop-scroll',
+  selector: 'ngx-loop-scroll',
   template: `
     <style>
       .container {

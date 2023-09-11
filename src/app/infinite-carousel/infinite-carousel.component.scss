@@ -1,0 +1,10 @@
+.container {
+    position: relative;
+    overflow: hidden; 
+    // height: 250px;
+  }
+
+.viewport {
+    transform: translateX(-250px);
+
+}

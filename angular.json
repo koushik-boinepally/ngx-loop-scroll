@@ -105,6 +105,37 @@
           }
         }
       }
+    },
+    "loop-scroll": {
+      "projectType": "library",
+      "root": "projects/loop-scroll",
+      "sourceRoot": "projects/loop-scroll/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/loop-scroll/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/loop-scroll/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/loop-scroll/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/loop-scroll/src/test.ts",
+            "tsConfig": "projects/loop-scroll/tsconfig.spec.json",
+            "karmaConfig": "projects/loop-scroll/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "infinite-carousel"

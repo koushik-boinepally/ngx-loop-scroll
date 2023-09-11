@@ -1,0 +1,7 @@
+<div class="viewport" (mouseover)="mouseover($event)" 
+(mouseleave)="mouseleave($event)" appDragDetection 
+(onDrag)="handleDrag($event)" (mousewheel)="mousewheel($event)" >
+    <div class="container">
+        <ng-content></ng-content>
+    </div>
+</div>

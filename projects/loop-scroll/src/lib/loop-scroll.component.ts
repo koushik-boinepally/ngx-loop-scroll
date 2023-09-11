@@ -109,6 +109,11 @@ export class LoopScrollComponent implements AfterViewInit {
 
   positionItems(): void {
 
+    // Wait for the view to render before querying the DOM.
+    if (!this.containerDiv) {
+      return;
+    }
+
     // Query the DOM to get the children of the `div` with class `container`.
     // const container = this.el.nativeElement.querySelector('.container');
     const items = this.containerDiv!.children;

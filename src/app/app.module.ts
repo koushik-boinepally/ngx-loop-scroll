@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { InfiniteCarouselComponent } from './infinite-carousel/infinite-carousel.component';
 import { DragDetectionDirective } from './drag-detection.directive';
+import { LoopScrollModule } from 'projects/loop-scroll/src/public-api';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { DragDetectionDirective } from './drag-detection.directive';
     DragDetectionDirective
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    LoopScrollModule
   ],
   providers: [],
   bootstrap: [AppComponent]

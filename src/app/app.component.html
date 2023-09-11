@@ -1,27 +1,28 @@
 <div class="main">
-  <app-infinite-carousel direction="right" [height]="250" [autoplay]="true">
+  <ngx-loop-scroll direction="right" [height]="250" [autoplay]="true">
     <div *ngFor="let item of items; let i = index;" 
         class="item" [style.backgroundColor]="getColor(item)">
             <div>{{i}}</div>
         </div>
-  </app-infinite-carousel>
-  <app-infinite-carousel direction="left" [height]="250">
+  </ngx-loop-scroll>
+  <ngx-loop-scroll direction="left" [height]="250" [autoplay]="true">
     <div *ngFor="let item of items; let i = index;" 
         class="item" [style.backgroundColor]="getColor(item)">
             <div>{{i}}</div>
         </div>
-  </app-infinite-carousel>
-  <app-infinite-carousel direction="right" [height]="250">
+  </ngx-loop-scroll>
+  <ngx-loop-scroll direction="right" [height]="250" [autoplay]="true">
     <div *ngFor="let item of items; let i = index;" 
         class="item" [style.backgroundColor]="getColor(item)">
             <div>{{i}}</div>
         </div>
-  </app-infinite-carousel>
-  <app-infinite-carousel direction="left" [height]="250" >
+  </ngx-loop-scroll>
+  
+  <ngx-loop-scroll direction="left" [height]="250" [autoplay]="true">
     <div *ngFor="let item of items; let i = index;" 
         class="item" [style.backgroundColor]="getColor(item)">
             <div>{{i}}</div>
         </div>
-  </app-infinite-carousel>
+  </ngx-loop-scroll>
 
 </div>

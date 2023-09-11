@@ -3,6 +3,9 @@
 
 A simple Angular library to create infinitely scrolling items in a loop. This library offers a seamless looping scroll experience for your Angular projects.
 
+## Demo
+A live demo can be found [here](https://stackblitz.com/edit/stackblitz-starters-pevwdv). 
+
 ## Installation
 ```bash
 npm install ngx-loop-scroll --save
@@ -25,9 +28,6 @@ Simply wrap your list of items inside the `ngx-loop-scroll` component:
 - **height** (Required): The height of the scrolling area. This should be given as a binding.
 - **[autoplay]** (Optional): Set this to `true` to enable autoplay. Default is `false`.
 - **[animationSpeed]** (Optional): The speed at which the items should animate/scroll.
-
-## Demo
-A live demo can be found [here](#). 
 
 ## Limitations
 - Currently, only horizontal scrolling is supported.

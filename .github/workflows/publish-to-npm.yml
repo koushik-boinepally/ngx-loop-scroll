@@ -26,8 +26,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: cd projects/loop-scroll && npm version patch
-      - run: cd ../.. && ng build loop-scroll
-      - run: cd dist/loop-scroll
-      - run: npm publish
+      - run: npx ng build loop-scroll
+      - run: cd dist/loop-scroll && npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

@@ -1,38 +1,33 @@
 name: Publish to npm
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [created]
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 16
+      - run: npm ci
+      - run: npm test
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Bump package.json version in the library
-        run: |
-          cd projects/loop-scroll
-          npm version patch
-
-      - name: Build the library
-        run: ng build loop-scroll
-
-      - name: Publish to npm
-        run: |
-          cd dist/loop-scroll
-          npm publish
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: cd projects/loop-scroll && npm version patch
+      - run: cd ../.. && ng build loop-scroll
+      - run: cd dist/loop-scroll
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-

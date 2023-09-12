@@ -8,10 +8,6 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/co
         position: relative;
         overflow: hidden;
       }
-      .container {
-        position: relative;
-        overflow: hidden; 
-      }
 
       .viewport {
         transform: translateX(-250px); // TODO - make this offset dynamic
@@ -61,7 +57,7 @@ export class LoopScrollComponent implements AfterViewInit {
   _animationSpeed = 1;
   @Input() set animationSpeed(speed: number) {
     this._animationSpeed = speed;
-    this.increment *= speed;
+    this.increment = speed;
   }
 
 
@@ -81,7 +77,7 @@ export class LoopScrollComponent implements AfterViewInit {
   }
 
   mouseleave(event: MouseEvent): void {
-    this.increment = this._direction === 'left' ? -1 : 1;
+    this.increment = this._direction === 'left' ? -this._animationSpeed : this._animationSpeed;
   }
 
   containerDiv?: HTMLDivElement;

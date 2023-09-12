@@ -1,5 +1,6 @@
 <div class="main">
-  <ngx-loop-scroll direction="right" [height]="250" [autoplay]="true">
+  <ngx-loop-scroll direction="right" [height]="250" [autoplay]="true"
+  [animationSpeed]=".4">
     <div *ngFor="let item of items; let i = index;" 
         class="item" [style.backgroundColor]="getColor(item)">
             <div>{{i}}</div>

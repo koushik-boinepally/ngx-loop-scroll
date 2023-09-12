@@ -54,6 +54,13 @@ export class LoopScrollComponent implements AfterViewInit {
     }
   }
 
+  _animationSpeed = 1;
+  @Input() set animationSpeed(speed: number) {
+    this._animationSpeed = speed;
+    this.increment *= speed;
+  }
+
+
   constructor(private el: ElementRef) { }
 
   handleDrag(movementX: number): void {
@@ -155,9 +162,10 @@ export class LoopScrollComponent implements AfterViewInit {
 
   animateOffset() {
     const update = () => {
-      this.updateOffset(this.increment); 
-      if (this._autoplay)
+      this.updateOffset(this.increment);
+      if (this._autoplay) {
         requestAnimationFrame(update);
+      }
     };
     update();
   }

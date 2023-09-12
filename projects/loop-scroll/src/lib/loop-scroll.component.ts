@@ -4,6 +4,10 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/co
   selector: 'ngx-loop-scroll',
   template: `
     <style>
+      :host {
+        position: relative;
+        overflow: hidden;
+      }
       .container {
         position: relative;
         overflow: hidden; 
@@ -92,6 +96,8 @@ export class LoopScrollComponent implements AfterViewInit {
     for (const item of this.containerDiv!.children as any) {
       containerWidth += item.offsetWidth + 10; // assuming padding of 10px for simplicity
       itemCount++;
+      // Set position to absolute to allow for positioning
+      item.style.position = 'absolute';
     }
 
     this.itemCount = itemCount;

@@ -11,7 +11,23 @@ A live demo can be found [here](https://stackblitz.com/edit/stackblitz-starters-
 npm install ngx-loop-scroll --save
 ```
 
+Add `LoopScrollModule` to your modules imports
+```ts
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    LoopScrollModule // <--- Add this
+  ],
+  bootstrap: [AppComponent],
+})
+```
+
 ## Usage
+
 Simply wrap your list of items inside the `ngx-loop-scroll` component:
 
 ```html

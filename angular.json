@@ -3,14 +3,18 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "infinite-carousel": {
+    "ngx-loop-scroll-demo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "standalone": true
         },
-        "@schematics/angular:application": {
-          "strict": true
+        "@schematics/angular:directive": {
+          "standalone": true
+        },
+        "@schematics/angular:pipe": {
+          "standalone": true
         }
       },
       "root": "",
@@ -20,20 +24,26 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/infinite-carousel",
+            "outputPath": "dist/ngx-loop-scroll-demo",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "projects/ngx-loop-scroll/README.md",
+                "output": "/assets/docs/"
+              }
             ],
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": []
           },
           "configurations": {
             "production": {
@@ -49,13 +59,14 @@
                   "maximumError": "4kb"
                 }
               ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "serviceWorker": false,
+              "ngswConfigPath": "ngsw-config.json"
             },
             "development": {
               "buildOptimizer": false,
@@ -72,10 +83,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "infinite-carousel:build:production"
+              "buildTarget": "ngx-loop-scroll-demo:build:production"
             },
             "development": {
-              "browserTarget": "infinite-carousel:build:development"
+              "buildTarget": "ngx-loop-scroll-demo:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,16 +94,14 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "infinite-carousel:build"
+            "buildTarget": "ngx-loop-scroll-demo:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
@@ -103,26 +112,35 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     },
-    "loop-scroll": {
+    "ngx-loop-scroll": {
       "projectType": "library",
-      "root": "projects/loop-scroll",
-      "sourceRoot": "projects/loop-scroll/src",
-      "prefix": "lib",
+      "root": "projects/ngx-loop-scroll",
+      "sourceRoot": "projects/ngx-loop-scroll/src",
+      "prefix": "ngx",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/loop-scroll/ng-package.json"
+            "project": "projects/ngx-loop-scroll/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/loop-scroll/tsconfig.lib.prod.json"
+              "tsConfig": "projects/ngx-loop-scroll/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/loop-scroll/tsconfig.lib.json"
+              "tsConfig": "projects/ngx-loop-scroll/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -130,13 +148,44 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/loop-scroll/src/test.ts",
-            "tsConfig": "projects/loop-scroll/tsconfig.spec.json",
-            "karmaConfig": "projects/loop-scroll/karma.conf.js"
+            "tsConfig": "projects/ngx-loop-scroll/tsconfig.spec.json",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "karmaConfig": "projects/ngx-loop-scroll/karma.conf.js"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/ngx-loop-scroll/**/*.ts",
+              "projects/ngx-loop-scroll/**/*.html"
+            ]
+          }
+        }
+      },
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "standalone": true
+        },
+        "@schematics/angular:directive": {
+          "standalone": true
+        },
+        "@schematics/angular:pipe": {
+          "standalone": true
         }
       }
     }
   },
-  "defaultProject": "infinite-carousel"
+  "cli": {
+    "cache": {
+      "enabled": true,
+      "path": ".angular/cache",
+      "environment": "all"
+    },
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": false
+  }
 }

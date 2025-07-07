@@ -1,0 +1,154 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "@typescript-eslint/recommended",
+        "@typescript-eslint/recommended-requiring-type-checking",
+        "@angular-eslint/recommended",
+        "@angular-eslint/template/process-inline-templates"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/prefer-readonly": "error",
+        "@typescript-eslint/prefer-nullish-coalescing": "error",
+        "@typescript-eslint/prefer-optional-chain": "error",
+        "@typescript-eslint/no-unnecessary-condition": "error",
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "ngx",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "ngx",
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/use-lifecycle-interface": "error",
+        "@angular-eslint/use-injectable-provided-in": "error",
+        "@angular-eslint/no-conflicting-lifecycle": "error",
+        "@angular-eslint/no-host-metadata-property": "error",
+        "@angular-eslint/no-input-rename": "error",
+        "@angular-eslint/no-inputs-metadata-property": "error",
+        "@angular-eslint/no-output-native": "error",
+        "@angular-eslint/no-output-on-prefix": "error",
+        "@angular-eslint/no-output-rename": "error",
+        "@angular-eslint/no-outputs-metadata-property": "error",
+        "@angular-eslint/prefer-on-push-component-change-detection": "warn",
+        "prefer-const": "error",
+        "no-var": "error",
+        "object-shorthand": "error",
+        "prefer-arrow-callback": "error",
+        "prefer-template": "error",
+        "quote-props": ["error", "as-needed"],
+        "no-console": "warn",
+        "no-debugger": "error"
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "@angular-eslint/template/recommended",
+        "@angular-eslint/template/accessibility"
+      ],
+      "rules": {
+        "@angular-eslint/template/prefer-control-flow": "error",
+        "@angular-eslint/template/prefer-self-closing-tags": "error",
+        "@angular-eslint/template/use-track-by-function": "error",
+        "@angular-eslint/template/no-call-expression": "error",
+        "@angular-eslint/template/conditional-complexity": ["error", { "maxComplexity": 3 }],
+        "@angular-eslint/template/cyclomatic-complexity": ["error", { "maxComplexity": 10 }],
+        "@angular-eslint/template/no-duplicate-attributes": "error",
+        "@angular-eslint/template/alt-text": "error",
+        "@angular-eslint/template/elements-content": "error",
+        "@angular-eslint/template/label-has-associated-control": "error",
+        "@angular-eslint/template/table-scope": "error",
+        "@angular-eslint/template/valid-aria": "error",
+        "@angular-eslint/template/click-events-have-key-events": "error",
+        "@angular-eslint/template/mouse-events-have-key-events": "error",
+        "@angular-eslint/template/interactive-supports-focus": "error"
+      }
+    },
+    {
+      "files": [
+        "projects/ngx-loop-scroll/**/*.ts"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "@typescript-eslint/recommended",
+        "@typescript-eslint/recommended-requiring-type-checking",
+        "@angular-eslint/recommended"
+      ],
+      "parserOptions": {
+        "project": [
+          "projects/ngx-loop-scroll/tsconfig.lib.json"
+        ]
+      },
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/explicit-function-return-type": "warn",
+        "@typescript-eslint/explicit-module-boundary-types": "warn",
+        "@typescript-eslint/prefer-readonly": "error",
+        "@typescript-eslint/prefer-nullish-coalescing": "error",
+        "@typescript-eslint/prefer-optional-chain": "error",
+        "@typescript-eslint/no-unnecessary-condition": "error",
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "ngx",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "ngx",
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/prefer-on-push-component-change-detection": "error",
+        "no-console": "error",
+        "no-debugger": "error"
+      }
+    },
+    {
+      "files": [
+        "**/*.spec.ts"
+      ],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "no-console": "off"
+      }
+    }
+  ]
+}

@@ -1,19 +1,17 @@
 import { NgModule } from '@angular/core';
-import { LoopScrollComponent } from './loop-scroll.component';
 import { DragDetectionDirective } from './drag-detection.directive';
+import { LoopScrollComponent } from './loop-scroll.component';
 
 
 
 @NgModule({
   declarations: [
+  ],
+  imports: [
     LoopScrollComponent,
     DragDetectionDirective
   ],
-  imports: [
-    
-  ],
   exports: [
-    LoopScrollComponent
   ]
 })
 export class LoopScrollModule { }

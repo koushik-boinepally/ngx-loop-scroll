@@ -1,32 +1,447 @@
-name: Publish to npm
+name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  NODE_VERSION: '20.x'
+  CACHE_KEY: node-modules
 
 jobs:
-  build:
+  # Code Quality & Security
+  quality:
+    name: Code Quality & Security
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          node-version: 16
-      - run: npm ci
+          fetch-depth: 0
 
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: cd projects/loop-scroll && npm version patch
-      - run: npx ng build loop-scroll
-      - run: cd dist/loop-scroll && npm publish
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint TypeScript
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Check for vulnerabilities
+        run: npx audit-ci --moderate
+
+  # Unit Tests
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: ['18.x', '20.x']
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:coverage -- --watch=false --browsers=ChromeHeadless
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+
+  # Build Library
+  build:
+    name: Build Library
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library
+        run: npm run build
+
+      - name: Verify build artifacts
+        run: |
+          ls -la dist/ngx-loop-scroll/
+          test -f dist/ngx-loop-scroll/package.json
+          test -f dist/ngx-loop-scroll/README.md
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/ngx-loop-scroll/
+          retention-days: 30
+
+  # Build Demo App
+  build-demo:
+    name: Build Demo Application
+    runs-on: ubuntu-latest
+    needs: [build]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/ngx-loop-scroll/
+
+      - name: Build demo application
+        run: npm run build:demo
+
+      - name: Upload demo artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: demo-artifacts
+          path: dist/ngx-loop-scroll-demo/
+          retention-days: 7
+
+  # E2E Tests
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [build-demo]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download demo artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: demo-artifacts
+          path: dist/ngx-loop-scroll-demo/
+
+      - name: Install Playwright
+        run: npx playwright install chromium
+
+      - name: Serve demo app and run E2E tests
+        run: |
+          npx http-server dist/ngx-loop-scroll-demo -p 4200 &
+          sleep 5
+          npm run e2e:headless
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: e2e-results
+          path: e2e-results/
+
+  # Visual Regression Tests
+  visual-tests:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    needs: [build-demo]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download demo artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: demo-artifacts
+          path: dist/ngx-loop-scroll-demo/
+
+      - name: Run visual regression tests
+        run: |
+          npx http-server dist/ngx-loop-scroll-demo -p 4200 &
+          sleep 5
+          npm run test:visual
+
+      - name: Upload visual test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: visual-test-results
+          path: visual-test-results/
+
+  # Performance Tests
+  performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: [build-demo]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download demo artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: demo-artifacts
+          path: dist/ngx-loop-scroll-demo/
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        run: |
+          npx http-server dist/ngx-loop-scroll-demo -p 4200 &
+          sleep 5
+          lhci autorun
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+
+  # Bundle Analysis
+  bundle-analysis:
+    name: Bundle Analysis
+    runs-on: ubuntu-latest
+    needs: [build]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Analyze bundle size
+        run: npx bundlesize
+
+      - name: Generate bundle report
+        run: npx webpack-bundle-analyzer dist/ngx-loop-scroll/ --mode static --report bundle-report.html
+
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle-analysis
+          path: bundle-report.html
+
+  # Deploy Documentation
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    needs: [build-demo]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download demo artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: demo-artifacts
+          path: dist/ngx-loop-scroll-demo/
+
+      - name: Generate documentation
+        run: npm run docs:build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/ngx-loop-scroll-demo
+          cname: ngx-loop-scroll.docs.dev
+
+  # Publish to NPM
+  publish:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: [quality, test, build, e2e, visual-tests, performance]
+    if: github.event_name == 'release'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/ngx-loop-scroll/
+
+      - name: Verify package integrity
+        run: |
+          cd dist/ngx-loop-scroll
+          npm pack --dry-run
+
+      - name: Publish to NPM
+        run: |
+          cd dist/ngx-loop-scroll
+          npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release Assets
+        run: |
+          cd dist/ngx-loop-scroll
+          tar -czf ../../ngx-loop-scroll-${{ github.event.release.tag_name }}.tar.gz .
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./ngx-loop-scroll-${{ github.event.release.tag_name }}.tar.gz
+          asset_name: ngx-loop-scroll-${{ github.event.release.tag_name }}.tar.gz
+          asset_content_type: application/gzip
+
+  # Notification
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [publish]
+    if: always()
+    
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            🚀 ngx-loop-scroll ${{ github.event.release.tag_name }} has been published!
+            📦 NPM: https://www.npmjs.com/package/ngx-loop-scroll
+            📖 Docs: https://ngx-loop-scroll.docs.dev
+            🔗 GitHub: ${{ github.event.release.html_url }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: github.event_name == 'release' && success()
+
+      - name: Notify on failure
+        uses: 8398a7/action-slack@v3
+        with:
+          status: 'failure'
+          text: |
+            ❌ CI/CD Pipeline failed for ngx-loop-scroll
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Check: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: failure()
+
+# Workflow job summaries and status checks
+# jobs-summary:
+#   name: Jobs Summary
+#   runs-on: ubuntu-latest
+#   needs: [quality, test, build, e2e, visual-tests, performance, bundle-analysis]
+#   if: always()
+  
+#   steps:
+#     - name: Generate Summary
+#       run: |
+#         echo "## 📊 Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+#         echo "" >> $GITHUB_STEP_SUMMARY
+#         echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+#         echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+#         echo "| Code Quality | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+#         echo "| Unit Tests | ${{ needs.test.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+#         echo "| Build | ${{ needs.build.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+#         echo "| E2E Tests | ${{ needs.e2e.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+#         echo "| Visual Tests | ${{ needs.visual-tests.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+#         echo "| Performance | ${{ needs.performance.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+#         echo "| Bundle Analysis | ${{ needs.bundle-analysis.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY

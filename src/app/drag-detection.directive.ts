@@ -36,8 +36,8 @@ export class DragDetectionDirective {
 
   private isDragHorizontal(event: MouseEvent | TouchEvent, movementX: number): boolean {
     if (event instanceof TouchEvent && event.changedTouches && event.changedTouches.length) {
-      const movementY = event.changedTouches[0].clientY - (this.lastY || 0);
-      this.lastY = event.changedTouches[0].clientY;
+      const movementY = event.changedTouches[0]!.clientY - (this.lastY || 0);
+      this.lastY = event.changedTouches[0]!.clientY;
       return Math.abs(movementX) > Math.abs(movementY);
     }
     return true; // Assume horizontal for MouseEvents
@@ -56,7 +56,7 @@ export class DragDetectionDirective {
     if (event instanceof MouseEvent) {
       return event.clientX;
     } else if (event instanceof TouchEvent && event.touches.length > 0) {
-      return event.touches[0].clientX;
+      return event.touches[0]!.clientX;
     }
     return 0;
   }

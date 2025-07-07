@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -9,30 +8,68 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "paths": {
-      "loop-scroll": [
-        "dist/loop-scroll/loop-scroll",
-        "dist/loop-scroll"
-      ]
-    },
     "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
-    "target": "es2017",
-    "module": "es2020",
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
     "lib": [
-      "es2020",
-      "dom"
-    ]
+      "ES2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "paths": {
+      "ngx-loop-scroll": [
+        "dist/ngx-loop-scroll/ngx-loop-scroll",
+        "dist/ngx-loop-scroll"
+      ],
+      "@/*": ["src/*"],
+      "@lib/*": ["projects/ngx-loop-scroll/src/lib/*"],
+      "@demo/*": ["src/app/*"]
+    },
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+    "strictTemplates": true,
+    "strictInputTypes": true,
+    "strictOutputEventTypes": true,
+    "strictDomEventTypes": true,
+    "strictSafeNavigationTypes": true,
+    "strictDomLocalRefTypes": true,
+    "strictAttributeTypes": true,
+    "strictContextGenerics": true,
+    "strictLiteralTypes": true,
+    "enableBlockSyntax": true,
+    "enableLetSyntax": true,
+    "allowJs": false
+  },
+  "include": [
+    "src/**/*",
+    "projects/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.stories.ts",
+    "e2e",
+    "coverage"
+  ]
 }

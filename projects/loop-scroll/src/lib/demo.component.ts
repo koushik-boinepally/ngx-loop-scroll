@@ -14,7 +14,7 @@ import { LoopScrollComponent } from './loop-scroll.component';
       <ngx-loop-scroll 
         [items]="testimonials"
         [itemWidth]="350"
-        [height]="220"
+        [height]="2200"
         [speed]="60"
         [gap]="24">
         
@@ -69,6 +69,7 @@ import { LoopScrollComponent } from './loop-scroll.component';
       justify-content: center;
       text-align: center;
       border: 1px solid #e0e0e0;
+      margin-top: 32px;
       transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
     .testimonial-card:hover {
